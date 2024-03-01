@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "PVruvcf5DSgtO1TGdLJSNGZn2TsKiTcOZBFq8bqvqXk=",
+  "Source": "ibanking-service",
+  "BasePath": "_content/ibanking-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

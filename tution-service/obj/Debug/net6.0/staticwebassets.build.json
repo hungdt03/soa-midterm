@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "lcHxPMvN40WnkhMtNXoLsGb4cZ76/v2xhyT/Z/VsTFw=",
+  "Source": "tution-service",
+  "BasePath": "_content/tution-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,0 +1,9 @@
+﻿namespace tution_service.Exceptions
+{
+    public class NotFoundException : Exception
+    {
+        public NotFoundException(string? message) : base(message)
+        {
+        }
+    }
+}
