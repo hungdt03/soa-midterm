@@ -89,3 +89,4 @@ D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Microsoft.AspNetCore.Aut
 D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Plain.RabbitMQ.dll
 D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\RabbitMQ.Client.dll
+D:\Learning\SOA\midterm\tution-service\obj\Debug\net6.0\tution-service.sourcelink.json

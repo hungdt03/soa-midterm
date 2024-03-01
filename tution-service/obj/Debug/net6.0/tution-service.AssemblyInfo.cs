@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("tution-service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c366bab6da22a3a973c46145d1f1ff961fd7bddf")]
 [assembly: System.Reflection.AssemblyProductAttribute("tution-service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("tution-service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -44,9 +44,31 @@ namespace tution_service.Services
         public async Task<ApiResponse> FindByStudentCode(string studentCode)
         {
             Student student = await dbContext.Students
+                .Include(s => s.Tutions)
                 .SingleOrDefaultAsync(s => s.StudentCode.Equals(studentCode)) ??
                     throw new NotFoundException("Not found student with code = " + studentCode);
-            return new ApiResponse(true, "Found student", student);
+            return new ApiResponse(true, "Found student", MapStudent(student));
+        }
+
+        private object MapStudent(Student student)
+        {
+            if (student == null) return null;
+            return new { 
+                Id = student.Id,
+                StudentCode = student.StudentCode,
+                FullName = student.FullName,
+                Tutions = student.Tutions != null ? student.Tutions.Select(
+                    t => new {
+                        Id = t.Id,
+                        Status = t.Status,
+                        Amount = t.Amount,
+                        TutionCode = t.TutionCode,
+                        Description = t.Description,
+                    }
+                ) : null,
+
+            };
+
         }
     }
 }

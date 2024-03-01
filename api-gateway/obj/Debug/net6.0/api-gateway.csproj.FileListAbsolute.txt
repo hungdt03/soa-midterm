@@ -49,3 +49,4 @@ D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Microsoft.IdentityModel.Pro
 D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Learning\SOA\midterm\api-gateway\obj\Debug\net6.0\api-gateway.sourcelink.json

@@ -86,3 +86,4 @@ D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\refint\authentic
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-service.pdb
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-service.genruntimeconfig.cache
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\ref\authentication-service.dll
+D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-service.sourcelink.json
