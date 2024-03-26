@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Steeltoe.Common.Discovery;
-using Steeltoe.Discovery;
 using tution_service.Dtos;
 using tution_service.Services;
 

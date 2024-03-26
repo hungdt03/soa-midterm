@@ -5,14 +5,12 @@ using authentication_service.Services;
 using authentication_service.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Steeltoe.Discovery.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
 
-builder.Services.AddDiscoveryClient(builder.Configuration);
 builder.Services.AddDbContext<AccountDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));

@@ -90,14 +90,3 @@ D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\Learning\SOA\midterm\tution-service\obj\Debug\net6.0\tution-service.sourcelink.json
 D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\ShareDtos.dll
 D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\ShareDtos.pdb
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Common.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Common.Abstractions.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Common.Http.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Connector.Abstractions.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Connector.ConnectorBase.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Connector.ConnectorCore.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Discovery.Abstractions.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Discovery.ClientBase.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Discovery.Eureka.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\Steeltoe.Extensions.Configuration.Abstractions.dll
-D:\Learning\SOA\midterm\tution-service\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.dll

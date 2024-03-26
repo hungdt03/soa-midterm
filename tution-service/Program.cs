@@ -2,8 +2,6 @@ using ibanking_server.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Steeltoe.Common.Http.Discovery;
-using Steeltoe.Discovery.Client;
 using System;
 using tution_service.Data;
 using tution_service.Exceptions;
@@ -20,10 +18,10 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.Configure<ApiBehaviorOptions>(options
     => options.SuppressModelStateInvalidFilter = true);
-builder.Services.AddHttpClient<ITransactionClient, TransactionClient>();
+
+builder.Services.AddScoped<ITransactionClient, TransactionClient>();
 builder.Services.AddScoped<ITutionService, TutionService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<TutionDbContext>(option =>
 {
@@ -39,8 +37,7 @@ builder.Services.AddControllers(option =>
 builder.Services.AddHttpClient("banking-service", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["BankingService:BaseUrl"]);
-}).AddServiceDiscovery();
-
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

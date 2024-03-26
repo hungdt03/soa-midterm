@@ -3,8 +3,7 @@ using ibanking_server.Exceptions;
 using ibanking_server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Steeltoe.Common.Discovery;
-using Steeltoe.Discovery;
+
 using System.Security.Claims;
 
 namespace ibanking_server.Controllers
@@ -14,12 +13,10 @@ namespace ibanking_server.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService transactionService;
-        DiscoveryHttpClientHandler _handler;
 
-        public TransactionController(ITransactionService transactionService, IDiscoveryClient client)
+        public TransactionController(ITransactionService transactionService)
         {
             this.transactionService = transactionService;
-            _handler = new DiscoveryHttpClientHandler(client);
         }
 
 

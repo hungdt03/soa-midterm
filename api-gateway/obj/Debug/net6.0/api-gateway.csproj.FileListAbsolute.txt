@@ -50,14 +50,3 @@ D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Microsoft.IdentityModel.Pro
 D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
 D:\Learning\SOA\midterm\api-gateway\obj\Debug\net6.0\api-gateway.sourcelink.json
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Common.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Common.Abstractions.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Common.Http.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Connector.Abstractions.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Connector.ConnectorBase.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Discovery.Abstractions.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Discovery.ClientBase.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Extensions.Configuration.Abstractions.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Connector.ConnectorCore.dll
-D:\Learning\SOA\midterm\api-gateway\bin\Debug\net6.0\Steeltoe.Discovery.Eureka.dll

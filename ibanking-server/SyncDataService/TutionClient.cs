@@ -10,12 +10,10 @@ namespace ibanking_server.SyncDataService
     public class TutionClient : ITutionClient
     {
         private readonly HttpClient _httpClient;
-        //private readonly IConfiguration _configuration;
 
         public TutionClient(IHttpClientFactory factory)
         {
             _httpClient = factory.CreateClient("tution-service");
-            //_configuration = configuration;
         }
 
         public async Task<ApiResponse> SendToTution(TransactionSender sender)
@@ -26,7 +24,7 @@ namespace ibanking_server.SyncDataService
               "application/json"
           );
 
-            var response = await _httpClient.PostAsync("/tutions/payment/callback", httpContent);
+            var response = await _httpClient.PostAsync("/api/tutions/payment/callback", httpContent);
             string responseData = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)

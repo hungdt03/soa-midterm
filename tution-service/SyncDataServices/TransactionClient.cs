@@ -39,7 +39,7 @@ namespace tution_service.SyncDataServices
 
             
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.PostAsync("/transactions", httpContent);
+            var response = await _httpClient.PostAsync("/api/transactions", httpContent);
 
             if (response.IsSuccessStatusCode)
             {

@@ -87,14 +87,3 @@ D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-s
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-service.genruntimeconfig.cache
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\ref\authentication-service.dll
 D:\Learning\SOA\midterm\authentication-service\obj\Debug\net6.0\authentication-service.sourcelink.json
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Common.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Common.Abstractions.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Common.Http.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Connector.Abstractions.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Connector.ConnectorBase.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Connector.ConnectorCore.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Discovery.Abstractions.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Discovery.ClientBase.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Discovery.Eureka.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\Steeltoe.Extensions.Configuration.Abstractions.dll
-D:\Learning\SOA\midterm\authentication-service\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.dll
