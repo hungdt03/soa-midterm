@@ -123,6 +123,9 @@ namespace ibanking_server.Migrations
                     b.Property<int>("TransactionType")
                         .HasColumnType("int");
 
+                    b.Property<int>("TutionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");

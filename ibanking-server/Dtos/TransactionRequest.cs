@@ -6,5 +6,6 @@ namespace ibanking_server.Dtos
     {
         public double Amount { get; set; }
         public string Content { get; set; }
+        public int TutionId { get; set; }
     }
 }

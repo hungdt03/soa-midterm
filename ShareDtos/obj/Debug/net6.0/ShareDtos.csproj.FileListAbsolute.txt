@@ -1,0 +1,12 @@
+D:\Learning\SOA\midterm\ShareDtos\bin\Debug\net6.0\ShareDtos.deps.json
+D:\Learning\SOA\midterm\ShareDtos\bin\Debug\net6.0\ShareDtos.dll
+D:\Learning\SOA\midterm\ShareDtos\bin\Debug\net6.0\ShareDtos.pdb
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.GeneratedMSBuildEditorConfig.editorconfig
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.AssemblyInfoInputs.cache
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.AssemblyInfo.cs
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.csproj.CoreCompileInputs.cache
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.sourcelink.json
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.dll
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\refint\ShareDtos.dll
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ShareDtos.pdb
+D:\Learning\SOA\midterm\ShareDtos\obj\Debug\net6.0\ref\ShareDtos.dll

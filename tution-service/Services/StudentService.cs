@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using tution_service.Data;
 using tution_service.Dtos;
+using tution_service.Enums;
 using tution_service.Exceptions;
 using tution_service.Models;
 
@@ -17,6 +18,14 @@ namespace tution_service.Services
         }
         public async Task<ApiResponse> CreateStudent(StudentDTO studentDTO)
         {
+
+            Student? existedStudent = await dbContext.Students
+                .SingleOrDefaultAsync(s => s.StudentCode.Equals(studentDTO.StudentCode));
+
+            if(existedStudent != null) {
+                throw new Exception("Student existed");
+            }
+
             Student student = new Student();
             student.FullName = studentDTO.FullName;
             student.StudentCode = studentDTO.StudentCode;
@@ -60,7 +69,7 @@ namespace tution_service.Services
                 Tutions = student.Tutions != null ? student.Tutions.Select(
                     t => new {
                         Id = t.Id,
-                        Status = t.Status,
+                        Status = t.Status.Equals(TutionStatus.PAID) ? "PAID" : "UNPAID",
                         Amount = t.Amount,
                         TutionCode = t.TutionCode,
                         Description = t.Description,

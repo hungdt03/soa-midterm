@@ -22,9 +22,9 @@ namespace tution_service.SyncDataServices
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
-        public TransactionClient(HttpClient httpClient, IConfiguration configuration)
+        public TransactionClient(IHttpClientFactory factory, IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            this._httpClient = factory.CreateClient("banking-service");
             _configuration = configuration;
     
         }
@@ -39,12 +39,12 @@ namespace tution_service.SyncDataServices
 
             
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.PostAsync($"{_configuration["BankingService"]}/transactions", httpContent);
+            var response = await _httpClient.PostAsync("/transactions", httpContent);
 
             if (response.IsSuccessStatusCode)
             {
                 string responseData = await response.Content.ReadAsStringAsync();
-                ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseData);
+                ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseData)!;
                
                 return apiResponse!;
             }

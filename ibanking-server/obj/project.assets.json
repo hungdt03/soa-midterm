@@ -697,36 +697,6 @@
           }
         }
       },
-      "Plain.RabbitMQ/0.0.0.4": {
-        "type": "package",
-        "dependencies": {
-          "RabbitMQ.Client": "6.2.1",
-          "System.Threading.Tasks": "4.3.0"
-        },
-        "compile": {
-          "lib/netcoreapp3.1/Plain.RabbitMQ.dll": {}
-        },
-        "runtime": {
-          "lib/netcoreapp3.1/Plain.RabbitMQ.dll": {}
-        }
-      },
-      "RabbitMQ.Client/6.2.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Memory": "4.5.4",
-          "System.Threading.Channels": "4.7.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/RabbitMQ.Client.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/RabbitMQ.Client.dll": {
-            "related": ".pdb;.xml"
-          }
-        }
-      },
       "Swashbuckle.AspNetCore/6.5.0": {
         "type": "package",
         "dependencies": {
@@ -1179,32 +1149,6 @@
           "buildTransitive/net6.0/System.Text.Json.targets": {}
         }
       },
-      "System.Threading.Channels/4.7.1": {
-        "type": "package",
-        "compile": {
-          "lib/netcoreapp3.0/System.Threading.Channels.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netcoreapp3.0/System.Threading.Channels.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "System.Threading.Tasks/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.Runtime": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.3/System.Threading.Tasks.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Threading.Tasks.Extensions/4.5.4": {
         "type": "package",
         "compile": {
@@ -1234,6 +1178,16 @@
             "assetType": "runtime",
             "rid": "win"
           }
+        }
+      },
+      "ShareDtos/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/ShareDtos.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ShareDtos.dll": {}
         }
       }
     }
@@ -2466,37 +2420,6 @@
         "packageIcon.png"
       ]
     },
-    "Plain.RabbitMQ/0.0.0.4": {
-      "sha512": "Y76uRX/71mzHiT0DUW2VFSH9YR6eSDzdtSxtEzpW4SRHgJQ/OulRVLoFmxYl4IFHIk9+eUwwqOz3JGbcu/NT6A==",
-      "type": "package",
-      "path": "plain.rabbitmq/0.0.0.4",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/netcoreapp3.1/Plain.RabbitMQ.dll",
-        "plain.rabbitmq.0.0.0.4.nupkg.sha512",
-        "plain.rabbitmq.nuspec"
-      ]
-    },
-    "RabbitMQ.Client/6.2.1": {
-      "sha512": "kdcin0uz1b9xQPvlLOoa8Y2zQsfu7nRuTrcX02dCLVzwGVlsPp9AFgu1L3kRh4wSFEOGE03OVqpWKxaDlhuowQ==",
-      "type": "package",
-      "path": "rabbitmq.client/6.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "icon.png",
-        "lib/net461/RabbitMQ.Client.dll",
-        "lib/net461/RabbitMQ.Client.pdb",
-        "lib/net461/RabbitMQ.Client.xml",
-        "lib/netstandard2.0/RabbitMQ.Client.dll",
-        "lib/netstandard2.0/RabbitMQ.Client.pdb",
-        "lib/netstandard2.0/RabbitMQ.Client.xml",
-        "rabbitmq.client.6.2.1.nupkg.sha512",
-        "rabbitmq.client.nuspec"
-      ]
-    },
     "Swashbuckle.AspNetCore/6.5.0": {
       "sha512": "FK05XokgjgwlCI6wCT+D4/abtQkL1X1/B9Oas6uIwHFmYrIO9WUD5aLC9IzMs9GnHfUXOtXZ2S43gN1mhs5+aA==",
       "type": "package",
@@ -3418,98 +3341,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Threading.Channels/4.7.1": {
-      "sha512": "6akRtHK/wab3246t4p5v3HQrtQk8LboOt5T4dtpNgsp3zvDeM4/Gx8V12t0h+c/W9/enUrilk8n6EQqdQorZAA==",
-      "type": "package",
-      "path": "system.threading.channels/4.7.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/System.Threading.Channels.dll",
-        "lib/net461/System.Threading.Channels.xml",
-        "lib/netcoreapp3.0/System.Threading.Channels.dll",
-        "lib/netcoreapp3.0/System.Threading.Channels.xml",
-        "lib/netstandard1.3/System.Threading.Channels.dll",
-        "lib/netstandard1.3/System.Threading.Channels.xml",
-        "lib/netstandard2.0/System.Threading.Channels.dll",
-        "lib/netstandard2.0/System.Threading.Channels.xml",
-        "system.threading.channels.4.7.1.nupkg.sha512",
-        "system.threading.channels.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
-      ]
-    },
-    "System.Threading.Tasks/4.3.0": {
-      "sha512": "LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA==",
-      "type": "package",
-      "path": "system.threading.tasks/4.3.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/_._",
-        "lib/portable-net45+win8+wp8+wpa81/_._",
-        "lib/win8/_._",
-        "lib/wp80/_._",
-        "lib/wpa81/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/_._",
-        "ref/netcore50/System.Threading.Tasks.dll",
-        "ref/netcore50/System.Threading.Tasks.xml",
-        "ref/netcore50/de/System.Threading.Tasks.xml",
-        "ref/netcore50/es/System.Threading.Tasks.xml",
-        "ref/netcore50/fr/System.Threading.Tasks.xml",
-        "ref/netcore50/it/System.Threading.Tasks.xml",
-        "ref/netcore50/ja/System.Threading.Tasks.xml",
-        "ref/netcore50/ko/System.Threading.Tasks.xml",
-        "ref/netcore50/ru/System.Threading.Tasks.xml",
-        "ref/netcore50/zh-hans/System.Threading.Tasks.xml",
-        "ref/netcore50/zh-hant/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/System.Threading.Tasks.dll",
-        "ref/netstandard1.0/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/de/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/es/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/fr/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/it/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/ja/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/ko/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/ru/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/zh-hans/System.Threading.Tasks.xml",
-        "ref/netstandard1.0/zh-hant/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/System.Threading.Tasks.dll",
-        "ref/netstandard1.3/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/de/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/es/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/fr/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/it/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/ja/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/ko/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/ru/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/zh-hans/System.Threading.Tasks.xml",
-        "ref/netstandard1.3/zh-hant/System.Threading.Tasks.xml",
-        "ref/portable-net45+win8+wp8+wpa81/_._",
-        "ref/win8/_._",
-        "ref/wp80/_._",
-        "ref/wpa81/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.threading.tasks.4.3.0.nupkg.sha512",
-        "system.threading.tasks.nuspec"
-      ]
-    },
     "System.Threading.Tasks.Extensions/4.5.4": {
       "sha512": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg==",
       "type": "package",
@@ -3569,6 +3400,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "ShareDtos/1.0.0": {
+      "type": "project",
+      "path": "../ShareDtos/ShareDtos.csproj",
+      "msbuildProject": "../ShareDtos/ShareDtos.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -3579,7 +3415,7 @@
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.14",
       "Microsoft.Extensions.DependencyInjection >= 8.0.0",
       "Newtonsoft.Json >= 13.0.3",
-      "Plain.RabbitMQ >= 0.0.0.4",
+      "ShareDtos >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.5.0"
     ]
   },
@@ -3609,7 +3445,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Learning\\SOA\\midterm\\ShareDtos\\ShareDtos.csproj": {
+              "projectPath": "D:\\Learning\\SOA\\midterm\\ShareDtos\\ShareDtos.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -3650,10 +3490,6 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
-          },
-          "Plain.RabbitMQ": {
-            "target": "Package",
-            "version": "[0.0.0.4, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

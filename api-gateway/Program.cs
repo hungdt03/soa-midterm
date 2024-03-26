@@ -2,6 +2,7 @@ using api_gateway.Extensions;
 using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Steeltoe.Discovery.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("ocelot.json")
     .Build();
 // Add services to the container.
+
+builder.Services.AddDiscoveryClient(builder.Configuration);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddControllers();

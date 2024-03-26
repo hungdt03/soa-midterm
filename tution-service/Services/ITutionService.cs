@@ -1,4 +1,5 @@
-﻿using tution_service.Dtos;
+﻿using ShareDtos;
+using tution_service.Dtos;
 
 namespace tution_service.Services
 {
@@ -7,6 +8,7 @@ namespace tution_service.Services
         Task<ApiResponse> FindAllByStudentCode(string studentCode);
         Task<ApiResponse> CreateTution(TutionRequest tutionRequest);
         Task<ApiResponse> PaymentTution(PaymentRequest paymentRequest, string token);
+        Task<ApiResponse> Callback(TransactionSender callbackReq);
 
     }
 }

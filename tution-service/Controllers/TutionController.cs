@@ -1,6 +1,7 @@
 ﻿using ibanking_server.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShareDtos;
 using tution_service.Dtos;
 using tution_service.Services;
 
@@ -44,6 +45,13 @@ namespace tution_service.Controllers
 
             return Unauthorized();
             
+        }
+
+        [HttpPost("payment/callback")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Calllback([FromBody] TransactionSender callbackReq)
+        {
+            return Ok(await tutionService.Callback(callbackReq));
         }
     }
 }

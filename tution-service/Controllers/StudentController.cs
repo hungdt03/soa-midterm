@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Steeltoe.Common.Discovery;
+using Steeltoe.Discovery;
 using tution_service.Dtos;
 using tution_service.Services;
 
@@ -12,10 +14,12 @@ namespace tution_service.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService studentService;
+        
 
         public StudentController(IStudentService studentService)
         {
             this.studentService = studentService;
+            
         }
 
         [HttpPost]
@@ -30,6 +34,7 @@ namespace tution_service.Controllers
         {
             return Ok(await studentService.FindAll());
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> FindById([FromRoute] int id)

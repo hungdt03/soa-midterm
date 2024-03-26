@@ -1,17 +1,22 @@
-using ibanking_server.AsyncDataService;
 using ibanking_server.Data;
 using ibanking_server.Exceptions;
 using ibanking_server.Extensions;
 using ibanking_server.Services;
+using ibanking_server.SyncDataService;
 using ibanking_server.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Plain.RabbitMQ;
-using RabbitMQ.Client;
+using Microsoft.OpenApi.Models;
+using Steeltoe.Common.Http.Discovery;
+using Steeltoe.Discovery.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+
+//builder.Services.AddDiscoveryClient(builder.Configuration);
+
 builder.Services.AddDbContext<BankingDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("BankDB"));
@@ -27,18 +32,49 @@ builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.Configure<ApiBehaviorOptions>(options
     => options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://guest:guest@localhost:5673"));
-builder.Services.AddSingleton<IPublisher>(x => new Publisher(x.GetService<IConnectionProvider>(),
-    "update_tution_exchange",
-    ExchangeType.Headers
-));
+
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITutionClient, TutionClient>();
 builder.Services.AddScoped<OTPUtils>();
 builder.Services.AddScoped<EmailUtils>();
+
+builder.Services.AddHttpClient("tution-service", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["TutionService:BaseUrl"]);
+}).AddServiceDiscovery();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 var app = builder.Build();
 

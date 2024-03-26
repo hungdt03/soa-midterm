@@ -1,14 +1,14 @@
-﻿using ibanking_server.AsyncDataService;
-using ibanking_server.Data;
+﻿using ibanking_server.Data;
 using ibanking_server.Dtos;
 using ibanking_server.Enums;
 using ibanking_server.Exceptions;
 using ibanking_server.Models;
+using ibanking_server.SyncDataService;
 using ibanking_server.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
-using Plain.RabbitMQ;
+using ShareDtos;
 
 namespace ibanking_server.Services
 {
@@ -17,14 +17,14 @@ namespace ibanking_server.Services
         private readonly OTPUtils otpUtils;
         private readonly EmailUtils emailUtils;
         private readonly BankingDbContext dbContext;
-        private readonly IPublisher publisher;
+        private readonly ITutionClient tutionClient;
 
-        public TransactionService(OTPUtils otpUtils, BankingDbContext dbContext, EmailUtils emailUtils, IPublisher publisher)
+        public TransactionService(OTPUtils otpUtils, BankingDbContext dbContext, EmailUtils emailUtils, ITutionClient tutionClient)
         {
             this.otpUtils = otpUtils;
             this.emailUtils = emailUtils;
             this.dbContext = dbContext;
-            this.publisher = publisher;
+            this.tutionClient = tutionClient;
         }
 
         private async Task RemoveOldTransactionSession(int accountID)
@@ -78,6 +78,7 @@ namespace ibanking_server.Services
             transaction.StartTransactionTime = DateTime.Now;
             transaction.Content = transactionRequest.Content;
             transaction.TransactionType = TransactionType.TutionPayment;
+            transaction.TutionId = transactionRequest.TutionId;
 
             EntityEntry<Transaction> tr = await dbContext.Transactions.AddAsync(transaction);
             account.IsTrading = true;
@@ -120,21 +121,20 @@ namespace ibanking_server.Services
             user.Balance -= transaction.Amount;
             user.IsTrading = false;
 
-            await dbContext.SaveChangesAsync();
-
-            TransactionEvent transactionEvent = new TransactionEvent
+            TransactionSender transactionEvent = new TransactionSender
             {
-                Id = transaction.Id,
+                TransactionId = transaction.Id,
                 AccountId = user.Id,
                 AccountName = user.Name,
+                IsSuccess = true,
+                TutionId = transaction.TutionId,
                 Amount = transaction.Amount,
                 Content = transaction.Content,
                 StartTransactionTime = transaction.StartTransactionTime,
                 EndTransactionTime = transaction.EndTransactionTime,
             };
 
-            // Publish event to message queue
-            publisher.Publish(JsonConvert.SerializeObject(transactionEvent), "tution.update", null);
+            await tutionClient.SendToTution(transactionEvent);
 
             string to = user.Email;
             string subject = "Xác Nhận Thanh Toán Giao Dịch Thành Công";
@@ -154,6 +154,8 @@ namespace ibanking_server.Services
             ";
 
             emailUtils.SendMail(to, body, subject);
+
+            await dbContext.SaveChangesAsync();
 
             return new ApiResponse(true, "Transaction information", MapTransaction(transaction));
         }

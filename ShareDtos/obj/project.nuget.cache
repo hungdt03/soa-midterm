@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "0Zg8xvzWj6HPkqGOjoe6RHARbdhUkiroDcknTT5+mayKPeFUeDR4jJBmXc3E3uQSK718dwsZiN8rBZvFoTaBGA==",
+  "success": true,
+  "projectFilePath": "D:\\Learning\\SOA\\midterm\\ShareDtos\\ShareDtos.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.26\\microsoft.windowsdesktop.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.26\\microsoft.aspnetcore.app.ref.6.0.26.nupkg.sha512"
+  ],
+  "logs": []
+}

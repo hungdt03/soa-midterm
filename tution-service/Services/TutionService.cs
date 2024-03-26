@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShareDtos;
 using System;
 using tution_service.Data;
 using tution_service.Dtos;
@@ -83,6 +84,7 @@ namespace tution_service.Services
             TransactionRequest request = new TransactionRequest();
             request.Amount = checkedTution.Amount;
             request.Content = paymentRequest.Content;
+            request.TutionId = paymentRequest.TutionId;
 
             // Gọi tới banking-service
             ApiResponse response = await transactionClient.TransactionPaymentTutiton(request, token);
@@ -91,6 +93,28 @@ namespace tution_service.Services
             await _dbContext.SaveChangesAsync();
 
             return response;
+        }
+
+        public async Task<ApiResponse> Callback(TransactionSender callbackReq)
+        {
+
+            if(callbackReq.IsSuccess)
+            {
+                Tution? checkedTution = await _dbContext.Tutions
+                .SingleOrDefaultAsync(t => t.Id.Equals(callbackReq.TutionId) && t.TransactionId == callbackReq.TransactionId)
+                    ?? throw new NotFoundException($"Tution with id {callbackReq.TutionId} not found");
+
+                if (checkedTution.Status.Equals(TutionStatus.PAID))
+                    throw new ConflictException("This tution has already paid");
+
+                checkedTution.Status = TutionStatus.PAID;
+
+                await _dbContext.SaveChangesAsync();
+                return new ApiResponse(true, "Cập nhật trạng thái học phí thành công", null);
+            }
+
+            throw new ConflictException("Giao dịch thất bại");
+            
         }
     }
 }

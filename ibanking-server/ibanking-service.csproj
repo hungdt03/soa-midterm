@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>ibanking_server</RootNamespace>
+	  <SteeltoeVersion>3.2.6</SteeltoeVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +18,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Plain.RabbitMQ" Version="0.0.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	  <PackageReference Include="Steeltoe.Connector.ConnectorCore" Version="$(SteeltoeVersion)" />
+	  <PackageReference Include="Steeltoe.Discovery.Eureka" Version="$(SteeltoeVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShareDtos\ShareDtos.csproj" />
   </ItemGroup>
 
 </Project>

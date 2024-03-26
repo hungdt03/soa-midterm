@@ -15,6 +15,7 @@ namespace ibanking_server.Models
         public DateTime EndTransactionTime { get; set; }
         public TransactionType TransactionType { get; set; }
         public TransactionStatus TransactionStatus { get; set; }
+        public int TutionId { get; set; }
         public int AccountId { get; set; }
         public Account Account { get; set; }
     }
