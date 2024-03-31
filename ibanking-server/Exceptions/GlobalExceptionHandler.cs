@@ -65,19 +65,19 @@ namespace ibanking_server.Exceptions
                     };
                     break;
 
-                case Exception:
-                    var serverError = new
-                    {
-                        message = context.Exception.Message,
-                        success = false,
-                        statusCode = 500
-                    };
+                //case Exception:
+                //    var serverError = new
+                //    {
+                //        message = context.Exception.Message,
+                //        success = false,
+                //        statusCode = 500
+                //    };
 
-                    context.Result = new ObjectResult(serverError)
-                    {
-                        StatusCode = StatusCodes.Status500InternalServerError
-                    };
-                    break;
+                //    context.Result = new ObjectResult(serverError)
+                //    {
+                //        StatusCode = StatusCodes.Status500InternalServerError
+                //    };
+                //    break;
             }
         }
     }

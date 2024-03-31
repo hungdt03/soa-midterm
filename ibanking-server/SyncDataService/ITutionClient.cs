@@ -5,6 +5,6 @@ namespace ibanking_server.SyncDataService
 {
     public interface ITutionClient
     {
-        public Task<ApiResponse> SendToTution(TransactionSender sender);
+        public Task<HttpResponseMessage> SendToTution(TransactionSender sender);
     }
 }

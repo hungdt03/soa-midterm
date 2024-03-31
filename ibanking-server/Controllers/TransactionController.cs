@@ -29,10 +29,25 @@ namespace ibanking_server.Controllers
             return Ok(await transactionService.TransactionPaymentTutiton(request, email));
         }
 
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelTransaction([FromRoute] int id)
+        {
+            return Ok(await transactionService.CancelTransaction(id));
+        }
+
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOTP([FromBody] VerifyOTPRequest request)
         {
-            return Ok(await transactionService.VerifyOTP(request));
+            var token = Request.Headers["Authorization"].ToString();
+            string email = User.Claims.First(u => u.Type.Equals(ClaimTypes.Email))?.Value ?? "";
+            return Ok(await transactionService.VerifyOTP(request, email));
+        }
+
+        [HttpGet("history/{accountId}")]
+        [Authorize]
+        public async Task<IActionResult> GetTransactionsByUserId([FromRoute] int accountId)
+        {
+            return Ok(await transactionService.FindAllByUserId(accountId));
         }
     }
 }

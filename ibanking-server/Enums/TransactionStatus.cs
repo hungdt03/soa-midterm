@@ -2,6 +2,6 @@
 {
     public enum TransactionStatus
     {
-        UNCOMPLETED, COMPLETED
+        UNCOMPLETED, CANCELLED, IN_PROGRESS, COMPLETED
     }
 }

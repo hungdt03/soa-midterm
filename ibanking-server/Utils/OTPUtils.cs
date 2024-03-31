@@ -16,29 +16,18 @@ namespace ibanking_server.Utils
             this.dbContext = dbContext;
         }
 
-        public async Task<string> GenerateOTP(int accountId)
+        public string GenerateOTP()
         {
-            string otp = "";
-            bool checkOTP = true;
+            //string otp = "";
+            //bool checkOTP = true;
 
-            do
-            {
-                otp = RandomOTP();
-                checkOTP = await IsExistedOTP(otp, accountId);
-            } while (checkOTP);
+            //do
+            //{
+            //    otp = RandomOTP();
+            //    checkOTP = await IsExistedOTP(otp, accountId);
+            //} while (checkOTP);
 
-            return otp;
-        }
-
-        public async Task<bool> IsExistedOTP(string otp, int accountId)
-        {
-            OTP? existedOTP = await dbContext.OTPs
-                .SingleOrDefaultAsync(o => o.OTPCode.Equals(otp) && o.AccountId == accountId);
-            return existedOTP != null;
-        }
-
-        private string RandomOTP()
-        {
+            //return otp;
             Random random = new Random();
             string result = "";
 
@@ -50,10 +39,30 @@ namespace ibanking_server.Utils
             return result;
         }
 
-        public async Task<bool> VerifyOTP(string otp)
+        //public async Task<bool> IsExistedOTP(string otp, int accountId)
+        //{
+        //    OTP? existedOTP = await dbContext.OTPs
+        //        .SingleOrDefaultAsync(o => o.OTPCode.Equals(otp) && o.AccountId == accountId);
+        //    return existedOTP != null;
+        //}
+
+        //private string RandomOTP()
+        //{
+        //    Random random = new Random();
+        //    string result = "";
+
+        //    for (int i = 0; i < 6; i++)
+        //    {
+        //        result += random.Next(0, 10).ToString();
+        //    }
+
+        //    return result;
+        //}
+
+        public async Task<bool> VerifyOTP(string otp, int transactionId)
         {
             OTP existedOTP = await dbContext.OTPs
-                .SingleOrDefaultAsync(o => o.OTPCode.Equals(otp)) ??
+                .SingleOrDefaultAsync(o => o.OTPCode.Equals(otp) && o.TransactionId == transactionId) ??
                     throw new InvalidOTPException("OTP is invalid");
 
             if (existedOTP.ExpiredAt < DateTime.Now)

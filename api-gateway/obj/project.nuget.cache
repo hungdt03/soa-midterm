@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "iiEAvYw/QZswbAvDMVOYDZkpP0vz5BlZglpdHdsxtuoWUI/fIARH3reYY4dPIPLahUCtbbFMWwPkCYJQBikwEw==",
+  "dgSpecHash": "pbREaPTbbw/ANnBmyc/34RzukBBWzAaXWgo3ac4nMQJldY/JD/fzlD5Ko3zLOZ8KNN+3yvn4IsybsdfB2oTUrQ==",
   "success": true,
   "projectFilePath": "D:\\Learning\\SOA\\midterm\\api-gateway\\api-gateway.csproj",
   "expectedPackageFiles": [
@@ -31,8 +31,8 @@
     "C:\\Users\\hưng\\.nuget\\packages\\system.diagnostics.diagnosticsource\\4.7.1\\system.diagnostics.diagnosticsource.4.7.1.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.10.0\\system.identitymodel.tokens.jwt.6.10.0.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512",
-    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.26\\microsoft.windowsdesktop.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.26\\microsoft.windowsdesktop.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.26\\microsoft.aspnetcore.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.26\\microsoft.netcore.app.host.win-x64.6.0.26.nupkg.sha512"
   ],

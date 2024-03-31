@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using ShareDtos;
+using System.Net;
 
 namespace ibanking_server.Services
 {
@@ -27,50 +28,41 @@ namespace ibanking_server.Services
             this.tutionClient = tutionClient;
         }
 
-        private async Task RemoveOldTransactionSession(int accountID)
-        {
-            OTP? lastOTP = await dbContext.OTPs
-                .Where(o => o.AccountId == accountID)
-                .OrderBy(t => t.Id)
-                .LastOrDefaultAsync();
+        //private async Task RemoveOldTransactionSession(int accountID)
+        //{
+        //    OTP? lastOTP = await dbContext.OTPs
+        //        .Where(o => o.AccountId == accountID)
+        //        .OrderBy(t => t.Id)
+        //        .LastOrDefaultAsync();
 
-            if (lastOTP != null)
-            {
-                dbContext.OTPs.Remove(lastOTP);
-                Transaction? oldTransaction = await dbContext.Transactions
-                    .OrderBy(t => t.Id)
-                    .LastOrDefaultAsync();
+        //    if (lastOTP != null)
+        //    {
+        //        dbContext.OTPs.Remove(lastOTP);
+        //        Transaction? oldTransaction = await dbContext.Transactions
+        //            .OrderBy(t => t.Id)
+        //            .LastOrDefaultAsync();
 
-                if (oldTransaction != null && oldTransaction.TransactionStatus.Equals(TransactionStatus.UNCOMPLETED))
-                    dbContext.Transactions.Remove(oldTransaction);
-                await dbContext.SaveChangesAsync();
-            }
+        //        if (oldTransaction != null && oldTransaction.TransactionStatus.Equals(TransactionStatus.UNCOMPLETED))
+        //            dbContext.Transactions.Remove(oldTransaction);
+        //        await dbContext.SaveChangesAsync();
+        //    }
 
-            
-        }
+        //}
 
         public async Task<ApiResponse> TransactionPaymentTutiton(TransactionRequest transactionRequest, string email)
         {
-
             Account account = await dbContext.Accounts.SingleOrDefaultAsync(u => u.Email.Equals(email))
                 ?? throw new BadCredentialException("Unauthorized");
             if (account.Balance < transactionRequest.Amount)
                 throw new ConflictException("Your balance is less than the amount of tution");
 
-            // Kiểm tra người dùng có đang thực hiện giao dịch hay không
-            if (account.IsTrading)
-                // Xóa mã OTP và giao dịch cũ (chưa xác thực OTP mà người dùng đã chuyển sang giao dịch mới)
-                await RemoveOldTransactionSession(account.Id);
 
-            string otpCode = await otpUtils.GenerateOTP(account.Id);
+            string otpCode = otpUtils.GenerateOTP();
             OTP otp = new OTP();
             otp.OTPCode = otpCode;
             otp.CreatedAt = DateTime.Now;
             otp.ExpiredAt = DateTime.Now.AddMinutes(5);
-            otp.Account = account;
-
-            await dbContext.OTPs.AddAsync(otp);
-
+            
             Transaction transaction = new Transaction();
             transaction.Account = account;
             transaction.TransactionStatus = TransactionStatus.UNCOMPLETED;
@@ -79,9 +71,10 @@ namespace ibanking_server.Services
             transaction.Content = transactionRequest.Content;
             transaction.TransactionType = TransactionType.TutionPayment;
             transaction.TutionId = transactionRequest.TutionId;
+            transaction.OTP = otp;
 
             EntityEntry<Transaction> tr = await dbContext.Transactions.AddAsync(transaction);
-            account.IsTrading = true;
+            
             await dbContext.SaveChangesAsync();
 
             string to = account.Email;
@@ -103,24 +96,33 @@ namespace ibanking_server.Services
             return new ApiResponse(true, "Sucessfully to send OTP", (int)tr.Entity.Id);
         }
 
-        public async Task<ApiResponse> VerifyOTP(VerifyOTPRequest request)
+
+        public async Task<ApiResponse> VerifyOTP(VerifyOTPRequest request, string email)
         {
+            Account account = await dbContext.Accounts.SingleOrDefaultAsync(u => u.Email.Equals(email))
+                ?? throw new BadCredentialException("Unauthorized");
+
+            bool check = await dbContext.Transactions.AnyAsync(t => t.AccountId == account.Id && t.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS));
+            if (check)
+                throw new ConflictException("Đang có một giao dịch khác đang được xử lí!");
+
             Transaction transaction = await dbContext.Transactions
                 .Include(t => t.Account)
                 .SingleOrDefaultAsync(t => t.Id == request.TransactionId) ??
-                    throw new NotFoundException($"Not found transaction with id = {request.TransactionId} or it has been cancelled");
+                    throw new NotFoundException($"Không tìm thấy giao dịch = {request.TransactionId}");
+
+            if (transaction.TransactionStatus.Equals(TransactionStatus.CANCELLED))
+                throw new ConflictException($"Giao dịch này đã bị hủy bỏ!");
 
             if (transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
-                throw new ConflictException($"This transaction have already completed at {transaction.EndTransactionTime.ToString("HH:mm:ss dd/MM/yyyy")}");
+                throw new ConflictException($"Giao dịch này đã hoàn thành vào lúc {transaction.EndTransactionTime.ToString("HH:mm:ss dd/MM/yyyy")}");
+            
+            transaction.TransactionStatus = TransactionStatus.IN_PROGRESS;
+            await dbContext.SaveChangesAsync();
 
-            await otpUtils.VerifyOTP(request.Otp);
-            transaction.TransactionStatus = TransactionStatus.COMPLETED;
-            transaction.EndTransactionTime = DateTime.Now;
+            await otpUtils.VerifyOTP(request.Otp, transaction.Id);
 
             Account user = transaction.Account;
-            user.Balance -= transaction.Amount;
-            user.IsTrading = false;
-
             TransactionSender transactionEvent = new TransactionSender
             {
                 TransactionId = transaction.Id,
@@ -134,30 +136,62 @@ namespace ibanking_server.Services
                 EndTransactionTime = transaction.EndTransactionTime,
             };
 
-            await tutionClient.SendToTution(transactionEvent);
+            // Gọi tới service-học phí để gạch nợ phần học phí
+            HttpResponseMessage response = await tutionClient.SendToTution(transactionEvent);
 
-            string to = user.Email;
-            string subject = "Xác Nhận Thanh Toán Giao Dịch Thành Công";
-            string body = $@"
-                Chào {user.Name},
-                Chúng tôi xin thông báo rằng giao dịch thanh toán của bạn đã được thực hiện thành công. Dưới đây là chi tiết về phiên giao dịch:
-                Mã giao dịch: {transaction.Id}
-                Loại giao dịch: {transaction.TransactionType.ToString()}
-                Số Tiền Thanh Toán: {transaction.Amount} VND
-                Thời gian bắt đầu phiên giao dịch: {transaction.StartTransactionTime.ToString("hh:mm:ss dd/MM/yyyy")}
-                Thời gian kết thúc phiên giao dịch: {transaction.EndTransactionTime.ToString("hh:mm:ss dd/MM/yyyy")}
-                Phương Thức Thanh Toán: Internet Banking
-                Số Dư Khả Dụng Hiện Tại: {user.Balance} VND
-                Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Nếu có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng liên hệ chúng tôi ngay lập tức.
-                Trân trọng,
-                IBanking
-            ";
+            if (response.IsSuccessStatusCode)
+            {
 
-            emailUtils.SendMail(to, body, subject);
+                transaction.TransactionStatus = TransactionStatus.COMPLETED;
+                transaction.EndTransactionTime = DateTime.Now;
 
-            await dbContext.SaveChangesAsync();
+                
+                user.Balance -= transaction.Amount;
+                user.IsTrading = false;
+                await dbContext.SaveChangesAsync();
 
-            return new ApiResponse(true, "Transaction information", MapTransaction(transaction));
+                string to = user.Email;
+                string subject = "Xác Nhận Thanh Toán Giao Dịch Thành Công";
+                string body = $@"
+                    Chào {user.Name},
+                    Chúng tôi xin thông báo rằng giao dịch thanh toán của bạn đã được thực hiện thành công. Dưới đây là chi tiết về phiên giao dịch:
+                    Mã giao dịch: {transaction.Id}
+                    Loại giao dịch: {transaction.TransactionType.ToString()}
+                    Số Tiền Thanh Toán: {transaction.Amount} VND
+                    Thời gian bắt đầu phiên giao dịch: {transaction.StartTransactionTime.ToString("hh:mm:ss dd/MM/yyyy")}
+                    Thời gian kết thúc phiên giao dịch: {transaction.EndTransactionTime.ToString("hh:mm:ss dd/MM/yyyy")}
+                    Phương Thức Thanh Toán: Internet Banking
+                    Số Dư Khả Dụng Hiện Tại: {user.Balance} VND
+                    Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Nếu có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng liên hệ chúng tôi ngay lập tức.
+                    Trân trọng,
+                    IBanking
+                ";
+
+                emailUtils.SendMail(to, body, subject);
+                return new ApiResponse(true, "Transaction information", MapTransaction(transaction));
+            }
+            else
+            {
+                transaction.TransactionStatus = TransactionStatus.CANCELLED;
+                await dbContext.SaveChangesAsync();
+                string responseData = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseData);
+
+                if (response.StatusCode == HttpStatusCode.Conflict)
+                {
+                    throw new ConflictException(apiResponse?.Message);
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException(apiResponse?.Message);
+                }
+                else
+                {
+                    throw new Exception($"Có lỗi: {apiResponse?.Message}");
+                }
+            }
+
+            
         }
 
         private object MapTransaction(Transaction transaction)
@@ -173,6 +207,33 @@ namespace ibanking_server.Services
                 AccountName = transaction.Account.Name,
                 AccountId = transaction.Account.Id,
             };
+        }
+
+        public ICollection<object> MapToList(ICollection<Transaction> transactions)
+        {
+            return transactions.Select(MapTransaction).ToList();
+        }
+
+        public async Task<ApiResponse> FindAllByUserId(int id)
+        {
+            ICollection<Transaction> transactions = await dbContext.Transactions
+                .Include (t => t.Account)
+                .Where(t => t.AccountId.Equals(id)).ToListAsync();
+
+            return new ApiResponse(true, "Lấy thông tin giao dịch thành công", MapToList(transactions));
+        }
+
+        public async Task<ApiResponse> CancelTransaction(int id)
+        {
+            Transaction? transaction = await dbContext.Transactions
+                .Include(t => t.Account)
+                .SingleOrDefaultAsync(t => t.Id == id)
+                    ?? throw new NotFoundException("Không tìm thấy giao dịch");
+
+            transaction.TransactionStatus = TransactionStatus.CANCELLED;
+            transaction.Account.IsTrading = false;
+            await dbContext.SaveChangesAsync();
+            return new ApiResponse(true, "Hủy bỏ giao dịch thành công", null);
         }
     }
 }

@@ -94,7 +94,6 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-        //"AllowedScopes": []
       }
     },
     // Map routing for auth-service
@@ -151,7 +150,21 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-        //"AllowedScopes": []
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/transactions/history/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/transactions/history/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
       }
     },
     {

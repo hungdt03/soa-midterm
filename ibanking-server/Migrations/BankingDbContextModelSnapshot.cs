@@ -69,9 +69,6 @@ namespace ibanking_server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -86,9 +83,13 @@ namespace ibanking_server.Migrations
                     b.Property<int>("OTPStatus")
                         .HasColumnType("int");
 
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
 
                     b.ToTable("OTPs");
                 });
@@ -135,13 +136,13 @@ namespace ibanking_server.Migrations
 
             modelBuilder.Entity("ibanking_server.Models.OTP", b =>
                 {
-                    b.HasOne("ibanking_server.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                    b.HasOne("ibanking_server.Models.Transaction", "Transaction")
+                        .WithOne("OTP")
+                        .HasForeignKey("ibanking_server.Models.OTP", "TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("ibanking_server.Models.Transaction", b =>
@@ -158,6 +159,12 @@ namespace ibanking_server.Migrations
             modelBuilder.Entity("ibanking_server.Models.Account", b =>
                 {
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("ibanking_server.Models.Transaction", b =>
+                {
+                    b.Navigation("OTP")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

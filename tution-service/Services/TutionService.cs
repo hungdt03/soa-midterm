@@ -25,6 +25,7 @@ namespace tution_service.Services
         public async Task<ApiResponse> CreateTution(TutionRequest tutionRequest)
         {
             Tution? checkedTution = await _dbContext.Tutions
+                .Include(t => t.Student)
                 .SingleOrDefaultAsync(t => t.TutionCode.Equals(tutionRequest.TutionCode) && t.StudentId == tutionRequest.StudentId);
 
             if (checkedTution != null)
@@ -101,11 +102,11 @@ namespace tution_service.Services
             if(callbackReq.IsSuccess)
             {
                 Tution? checkedTution = await _dbContext.Tutions
-                .SingleOrDefaultAsync(t => t.Id.Equals(callbackReq.TutionId) && t.TransactionId == callbackReq.TransactionId)
-                    ?? throw new NotFoundException($"Tution with id {callbackReq.TutionId} not found");
+                .SingleOrDefaultAsync(t => t.Id.Equals(callbackReq.TutionId))
+                    ?? throw new NotFoundException($"Không tìm thấy học phí có mã = {callbackReq.TutionId}");
 
                 if (checkedTution.Status.Equals(TutionStatus.PAID))
-                    throw new ConflictException("This tution has already paid");
+                    throw new ConflictException("Phần học phí này đã được thanh toán");
 
                 checkedTution.Status = TutionStatus.PAID;
 

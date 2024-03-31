@@ -20,6 +20,7 @@ namespace authentication_service.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetPrincipal()
         {
             string email = HttpContext.User.Claims.FirstOrDefault(u => u.Type.Equals(ClaimTypes.Email))?.Value ?? "";

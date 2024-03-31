@@ -15,7 +15,8 @@ namespace ibanking_server.Models
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiredAt { get; set; }
         public OTPStatus OTPStatus {  get; set; } 
-        public int AccountId { get; set; }
-        public Account Account { get; set; }
+
+        public int TransactionId { get; set; }
+        public Transaction Transaction { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ibanking_server.Dtos;
+﻿using ibanking_server.Data;
+using ibanking_server.Dtos;
 using ibanking_server.Exceptions;
 using Newtonsoft.Json;
 using ShareDtos;
@@ -16,7 +17,7 @@ namespace ibanking_server.SyncDataService
             _httpClient = factory.CreateClient("tution-service");
         }
 
-        public async Task<ApiResponse> SendToTution(TransactionSender sender)
+        public async Task<HttpResponseMessage> SendToTution(TransactionSender sender)
         {
             var httpContent = new StringContent(
               JsonConvert.SerializeObject(sender),
@@ -25,30 +26,8 @@ namespace ibanking_server.SyncDataService
           );
 
             var response = await _httpClient.PostAsync("/api/tutions/payment/callback", httpContent);
-            string responseData = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseData)!;
-                return apiResponse!;
-            }
-            else
-            {
-                var apiResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseData);
-
-                if (response.StatusCode == HttpStatusCode.Conflict)
-                {
-                    throw new ConflictException(apiResponse?.Message);
-                }
-                else if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new NotFoundException(apiResponse?.Message);
-                }
-                else
-                {
-                    throw new Exception($"Có lỗi: {apiResponse?.Message}");
-                }
-            }
+            return response;
+          
         }
     }
 }
