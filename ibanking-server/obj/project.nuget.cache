@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1rAm2sJ33UHzX/JIJi7Oad0xqUjOJ8ij6JeQtNV7th+yrKUCf1a2W+df16fxbLc7W7RwnWs2QuelzIqp8KwExw==",
+  "dgSpecHash": "xrZZsXYV+MKCcHx8MhqnHiBS+X4v2AHn5MfAHrjmFDtwATVybeWhxaBefYQKwW7DSvRWJ8cfD7tJuoP98ztdLg==",
   "success": true,
   "projectFilePath": "D:\\Learning\\SOA\\midterm\\ibanking-server\\ibanking-service.csproj",
   "expectedPackageFiles": [
@@ -72,8 +72,8 @@
     "C:\\Users\\hưng\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.26\\microsoft.windowsdesktop.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.26\\microsoft.aspnetcore.app.ref.6.0.26.nupkg.sha512",
     "C:\\Users\\hưng\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.26\\microsoft.netcore.app.host.win-x64.6.0.26.nupkg.sha512"
   ],

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ibanking-service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+129f097632a1983eb3697a8f539c7be360847c2f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe1b7edc6a9c35a351cf5867617a34068ba89c12")]
 [assembly: System.Reflection.AssemblyProductAttribute("ibanking-service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ibanking-service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
