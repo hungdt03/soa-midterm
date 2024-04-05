@@ -29,6 +29,13 @@ namespace ibanking_server.Controllers
             return Ok(await transactionService.TransactionPaymentTutiton(request, email));
         }
 
+        [HttpGet("send-otp/again/{transactionId}")]
+        [Authorize]
+        public async Task<IActionResult> SendCodeAgain([FromRoute] int transactionId)
+        {
+            return Ok(await transactionService.SendCodeAgain(transactionId));
+        }
+
         [HttpPut("cancel/{id}")]
         public async Task<IActionResult> CancelTransaction([FromRoute] int id)
         {

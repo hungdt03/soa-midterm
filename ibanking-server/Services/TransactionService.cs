@@ -28,33 +28,12 @@ namespace ibanking_server.Services
             this.tutionClient = tutionClient;
         }
 
-        //private async Task RemoveOldTransactionSession(int accountID)
-        //{
-        //    OTP? lastOTP = await dbContext.OTPs
-        //        .Where(o => o.AccountId == accountID)
-        //        .OrderBy(t => t.Id)
-        //        .LastOrDefaultAsync();
-
-        //    if (lastOTP != null)
-        //    {
-        //        dbContext.OTPs.Remove(lastOTP);
-        //        Transaction? oldTransaction = await dbContext.Transactions
-        //            .OrderBy(t => t.Id)
-        //            .LastOrDefaultAsync();
-
-        //        if (oldTransaction != null && oldTransaction.TransactionStatus.Equals(TransactionStatus.UNCOMPLETED))
-        //            dbContext.Transactions.Remove(oldTransaction);
-        //        await dbContext.SaveChangesAsync();
-        //    }
-
-        //}
-
         public async Task<ApiResponse> TransactionPaymentTutiton(TransactionRequest transactionRequest, string email)
         {
             Account account = await dbContext.Accounts.SingleOrDefaultAsync(u => u.Email.Equals(email))
                 ?? throw new BadCredentialException("Unauthorized");
             if (account.Balance < transactionRequest.Amount)
-                throw new ConflictException("Your balance is less than the amount of tution");
+                throw new ConflictException("Số dư khả dụng của bạn không đủ!");
 
 
             string otpCode = await otpUtils.GenerateOTP();
@@ -97,32 +76,56 @@ namespace ibanking_server.Services
             return new ApiResponse(true, "Sucessfully to send OTP", (int)tr.Entity.Id);
         }
 
+        private async Task UpdateTransaction(int accountId)
+        {
+            List<Transaction> transactions = await dbContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS)).ToListAsync();
+            
+            bool isHandle = false;
+            foreach (Transaction transaction in transactions)
+            {
+                TimeSpan spaceTime = DateTime.Now - transaction.StartTransactionTime;
+                if (spaceTime.TotalMinutes > 5)
+                {
+                    transaction.TransactionStatus = TransactionStatus.CANCELLED;
+                } else
+                {
+                    isHandle = true;
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+            
+            if (isHandle)
+                throw new ConflictException("Có một giao dịch khác đang được xử lí!");
+        }
+
 
         public async Task<ApiResponse> VerifyOTP(VerifyOTPRequest request, string email)
         {
             Account account = await dbContext.Accounts.SingleOrDefaultAsync(u => u.Email.Equals(email))
                 ?? throw new BadCredentialException("Unauthorized");
 
-            bool check = await dbContext.Transactions.AnyAsync(t => t.AccountId == account.Id && t.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS));
-            if (check)
-                throw new ConflictException("Đang có một giao dịch khác đang được xử lí!");
-
             Transaction transaction = await dbContext.Transactions
                 .Include(t => t.Account)
                 .SingleOrDefaultAsync(t => t.Id == request.TransactionId) ??
                     throw new NotFoundException($"Không tìm thấy giao dịch = {request.TransactionId}");
+            if(transaction.TutionId == request.TutionId && transaction.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS)) {
+                throw new ConflictException("Phần học phí này đang được xử lí bởi một giao dịch khác");
+            }
 
             if (transaction.TransactionStatus.Equals(TransactionStatus.CANCELLED))
                 throw new ConflictException($"Giao dịch này đã bị hủy bỏ!");
 
             if (transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
                 throw new ConflictException($"Giao dịch này đã hoàn thành vào lúc {transaction.EndTransactionTime.ToString("HH:mm:ss dd/MM/yyyy")}");
+
+
+            await UpdateTransaction(account.Id); 
+            await otpUtils.VerifyOTP(request.Otp, request.TransactionId);
             
             transaction.TransactionStatus = TransactionStatus.IN_PROGRESS;
             await dbContext.SaveChangesAsync();
-
-            await otpUtils.VerifyOTP(request.Otp, transaction.Id);
-
+            
             Account user = transaction.Account;
             TransactionSender transactionEvent = new TransactionSender
             {
@@ -207,6 +210,7 @@ namespace ibanking_server.Services
                 TransactionType = transaction.TransactionType.ToString(),
                 AccountName = transaction.Account.Name,
                 AccountId = transaction.Account.Id,
+                TransactionStatus = transaction.TransactionStatus.ToString(),
             };
         }
 
@@ -245,7 +249,18 @@ namespace ibanking_server.Services
                 .SingleOrDefaultAsync(t => t.Id == transactionId)
                     ?? throw new NotFoundException("Không tìm thấy giao dịch");
 
-            transaction.OTPs[transaction.OTPs.Count - 1].OTPStatus = OTPStatus.INVALID;
+            TimeSpan spaceTime = DateTime.Now - transaction.StartTransactionTime;
+            if (spaceTime.TotalMinutes > 5)
+            {
+                transaction.TransactionStatus = TransactionStatus.CANCELLED;
+                await dbContext.SaveChangesAsync();
+                throw new ConflictException("Phiên giao dịch đã quá hạn");
+            }
+
+            if(transaction.OTPs.Count > 0)
+            {
+                transaction.OTPs[transaction.OTPs.Count - 1].OTPStatus = OTPStatus.INVALID;
+            }
 
             string otpCode = await otpUtils.GenerateOTP();
             OTP otp = new OTP();

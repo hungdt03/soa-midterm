@@ -62,6 +62,11 @@ namespace ibanking_server.Utils
                 throw new InvalidOTPException("OTP is expired");
             }
 
+            if(existedOTP.OTPStatus.Equals(OTPStatus.INVALID))
+            {
+                throw new ConflictException("Mã OTP không hợp lệ");
+            }
+
             existedOTP.OTPStatus = OTPStatus.EXPIRED;
             await dbContext.SaveChangesAsync();
             return true;

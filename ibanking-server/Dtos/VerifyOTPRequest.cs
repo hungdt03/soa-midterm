@@ -10,5 +10,7 @@ namespace ibanking_server.Dtos
 
         [Required]
         public int TransactionId { get; set; }
+        [Required]
+        public int TutionId { get; set; }
     }
 }
