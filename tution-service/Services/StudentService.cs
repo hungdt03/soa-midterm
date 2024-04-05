@@ -39,15 +39,15 @@ namespace tution_service.Services
         public async Task<ApiResponse> FindAll()
         {
             List<Student> students = await dbContext.Students.ToListAsync();
-            return new ApiResponse(true, "Fetch data successful", students);
+            return new ApiResponse(true, "Lấy dữ liệu sinh viên thành công", students);
         }
 
         public async Task<ApiResponse> FindById(int id)
         {
             Student student = await dbContext.Students
                 .SingleOrDefaultAsync(s => s.Id == id) ??
-                    throw new NotFoundException("Not found student with id = " + id);
-            return new ApiResponse(true, "Found student", student);
+                    throw new NotFoundException("Không tìm thấy sinh viên có id = " + id);
+            return new ApiResponse(true, "Tìm thấy sinh viên", student);
         }
 
         public async Task<ApiResponse> FindByStudentCode(string studentCode)
@@ -55,8 +55,8 @@ namespace tution_service.Services
             Student student = await dbContext.Students
                 .Include(s => s.Tutions)
                 .SingleOrDefaultAsync(s => s.StudentCode.Equals(studentCode)) ??
-                    throw new NotFoundException("Not found student with code = " + studentCode);
-            return new ApiResponse(true, "Found student", MapStudent(student));
+                    throw new NotFoundException("Không tìm thấy sinh viên có MSSV = " + studentCode);
+            return new ApiResponse(true, "Tìm thấy sinh viên", MapStudent(student));
         }
 
         private object MapStudent(Student student)

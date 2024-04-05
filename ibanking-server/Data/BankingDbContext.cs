@@ -13,10 +13,7 @@ namespace ibanking_server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Transaction>()
-                .HasOne(t => t.OTP)
-                .WithOne(o => o.Transaction)
-                .HasForeignKey<OTP>(o => o.TransactionId);
+    
         }
 
         public DbSet<Account> Accounts { get; set; }

@@ -70,17 +70,17 @@ namespace tution_service.Services
             List<Tution> tutions = await _dbContext.Tutions
                .Where(t => t.Student.StudentCode.Equals(studentCode)).ToListAsync();
 
-            return new ApiResponse(true, "Fetch data successful", tutions);
+            return new ApiResponse(true, "Lấy dữ liệu học phí thành công", tutions);
         }
 
         public async Task<ApiResponse> PaymentTution(PaymentRequest paymentRequest, string token)
         {
             Tution? checkedTution = await _dbContext.Tutions
                 .SingleOrDefaultAsync(t => t.Id.Equals(paymentRequest.TutionId) && t.StudentId == paymentRequest.StudentId)
-                    ?? throw new NotFoundException($"Tution with id {paymentRequest.TutionId} of student's id = {paymentRequest.StudentId}");
+                    ?? throw new NotFoundException($"Dữ liệu học phí có id= {paymentRequest.TutionId} của MSSV = {paymentRequest.StudentId} không tìm thấy");
 
             if (checkedTution.Status.Equals(TutionStatus.PAID))
-                throw new ConflictException("This tution has already paid");
+                throw new ConflictException("Phần học phí này đã được thanh toán");
 
             TransactionRequest request = new TransactionRequest();
             request.Amount = checkedTution.Amount;

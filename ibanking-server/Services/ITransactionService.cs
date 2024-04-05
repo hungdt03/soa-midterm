@@ -8,5 +8,6 @@ namespace ibanking_server.Services
         public Task<ApiResponse> VerifyOTP(VerifyOTPRequest request, string email);
         public Task<ApiResponse> CancelTransaction(int id);
         public Task<ApiResponse> FindAllByUserId(int id);
+        public Task<ApiResponse> SendCodeAgain(int transactionId);
     }
 }

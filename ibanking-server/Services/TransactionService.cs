@@ -57,7 +57,7 @@ namespace ibanking_server.Services
                 throw new ConflictException("Your balance is less than the amount of tution");
 
 
-            string otpCode = otpUtils.GenerateOTP();
+            string otpCode = await otpUtils.GenerateOTP();
             OTP otp = new OTP();
             otp.OTPCode = otpCode;
             otp.CreatedAt = DateTime.Now;
@@ -71,7 +71,8 @@ namespace ibanking_server.Services
             transaction.Content = transactionRequest.Content;
             transaction.TransactionType = TransactionType.TutionPayment;
             transaction.TutionId = transactionRequest.TutionId;
-            transaction.OTP = otp;
+            transaction.OTPs.Add(otp);
+            otp.Transaction = transaction;
 
             EntityEntry<Transaction> tr = await dbContext.Transactions.AddAsync(transaction);
             
@@ -168,7 +169,7 @@ namespace ibanking_server.Services
                 ";
 
                 emailUtils.SendMail(to, body, subject);
-                return new ApiResponse(true, "Transaction information", MapTransaction(transaction));
+                return new ApiResponse(true, "Giao dịch thành công", MapTransaction(transaction));
             }
             else
             {
@@ -234,6 +235,45 @@ namespace ibanking_server.Services
             transaction.Account.IsTrading = false;
             await dbContext.SaveChangesAsync();
             return new ApiResponse(true, "Hủy bỏ giao dịch thành công", null);
+        }
+
+        public async Task<ApiResponse> SendCodeAgain(int transactionId)
+        {
+            Transaction? transaction = await dbContext.Transactions
+                .Include(t => t.OTPs)
+                .Include(t => t.Account)
+                .SingleOrDefaultAsync(t => t.Id == transactionId)
+                    ?? throw new NotFoundException("Không tìm thấy giao dịch");
+
+            transaction.OTPs[transaction.OTPs.Count - 1].OTPStatus = OTPStatus.INVALID;
+
+            string otpCode = await otpUtils.GenerateOTP();
+            OTP otp = new OTP();
+            otp.OTPCode = otpCode;
+            otp.CreatedAt = DateTime.Now;
+            otp.ExpiredAt = DateTime.Now.AddMinutes(5);
+            otp.Transaction = transaction;
+
+            await dbContext.OTPs.AddAsync(otp);
+            await dbContext.SaveChangesAsync();
+
+            string to = transaction.Account.Email;
+            string subject = "Mã OTP Xác Nhận";
+            string body = $@"
+                Chào bạn {transaction.Account.Name},
+                Dưới đây là mã OTP (One-Time Password) của bạn để xác nhận giao dịch:
+                Mã OTP: {otpCode}
+                Vui lòng nhập mã này vào trang thanh toán để hoàn tất giao dịch.
+                Lưu ý rằng mã OTP chỉ có hiệu lực trong 5 phút và chỉ sử dụng được một lần. Để bảo mật tài khoản của bạn, xin đừng chia sẻ mã này với người khác.
+                Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.
+                Trân trọng,
+                IBanking
+            ";
+
+            if (!emailUtils.SendMail(to, body, subject))
+                throw new Exception("Error when sending email");
+
+            return new ApiResponse(true, "Gửi mã thành công", null);
         }
     }
 }

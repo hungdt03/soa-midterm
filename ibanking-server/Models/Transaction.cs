@@ -18,6 +18,7 @@ namespace ibanking_server.Models
         public int TutionId { get; set; }
         public int AccountId { get; set; }
         public Account Account { get; set; }
-        public OTP OTP { get; set; }
+        //public OTP OTP { get; set; }
+        public List<OTP> OTPs { get; set; } = new List<OTP>();
     }
 }

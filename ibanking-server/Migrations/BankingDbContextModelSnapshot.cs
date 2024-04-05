@@ -88,8 +88,7 @@ namespace ibanking_server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TransactionId")
-                        .IsUnique();
+                    b.HasIndex("TransactionId");
 
                     b.ToTable("OTPs");
                 });
@@ -137,8 +136,8 @@ namespace ibanking_server.Migrations
             modelBuilder.Entity("ibanking_server.Models.OTP", b =>
                 {
                     b.HasOne("ibanking_server.Models.Transaction", "Transaction")
-                        .WithOne("OTP")
-                        .HasForeignKey("ibanking_server.Models.OTP", "TransactionId")
+                        .WithMany("OTPs")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -163,8 +162,7 @@ namespace ibanking_server.Migrations
 
             modelBuilder.Entity("ibanking_server.Models.Transaction", b =>
                 {
-                    b.Navigation("OTP")
-                        .IsRequired();
+                    b.Navigation("OTPs");
                 });
 #pragma warning restore 612, 618
         }

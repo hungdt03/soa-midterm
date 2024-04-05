@@ -24,7 +24,7 @@ namespace authentication_service.Services
             string encodedPassword = passwordEncoder.Encode(request.Password);
             Account existedUser = await _dbContext.Accounts
                 .Where(u => u.Email.Equals(request.Email) && u.Password.Equals(encodedPassword))
-                .FirstOrDefaultAsync() ?? throw new BadCredentialsException("Invalid email or password");
+                .FirstOrDefaultAsync() ?? throw new BadCredentialsException("Thông tin đăng nhập chưa chính xác");
 
             DateTime expireTime = DateTime.Now.AddHours(2);
             string accessToken = jwtTokenUtil.GenerateToken(existedUser, expireTime);
@@ -38,7 +38,7 @@ namespace authentication_service.Services
                 .Where(u => u.Email.Equals(email))
                 .FirstOrDefaultAsync() ?? throw new BadCredentialsException("Unauthorized");
 
-            return new ApiResponse(true, "Get principal successful", existedUser);
+            return new ApiResponse(true, "Lấy thông tin người dùng thành công", existedUser);
         }
 
         public async Task<ApiResponse> Registry(RegistryRequest request)
@@ -54,7 +54,7 @@ namespace authentication_service.Services
                 .FirstOrDefaultAsync();
 
             if (existedUser != null)
-                throw new ConflictException("Email or phone number is already used");
+                throw new ConflictException("Thông tin email/số điện thoại đã tồn tại");
 
             string password = passwordEncoder.Encode(request.Password);
             Account user = new Account();
@@ -69,7 +69,7 @@ namespace authentication_service.Services
             await _dbContext.Accounts.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
-            return new ApiResponse(true, "Created", "");
+            return new ApiResponse(true, "Tạo tài khoản thành công", "");
         }
     }
 }
