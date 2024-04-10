@@ -55,7 +55,7 @@ namespace ibanking_server.Services
 
             EntityEntry<Transaction> tr = await dbContext.Transactions.AddAsync(transaction);
             
-            await dbContext.SaveChangesAsync();
+            
 
             string to = account.Email;
             string subject = "Mã OTP Xác Nhận";
@@ -71,7 +71,11 @@ namespace ibanking_server.Services
             ";
 
             if (!emailUtils.SendMail(to, body, subject))
-                throw new Exception("Error when sending email");
+            {
+                throw new ConflictException("Có lỗi trong quá trình xử lí! Vui lòng thử lại");
+            }
+
+            await dbContext.SaveChangesAsync();
 
             return new ApiResponse(true, "Sucessfully to send OTP", (int)tr.Entity.Id);
         }
@@ -99,6 +103,16 @@ namespace ibanking_server.Services
                 throw new ConflictException("Có một giao dịch khác đang được xử lí!");
         }
 
+        public async Task CheckInProgress(int tutionId)
+        {
+            bool isConflict = await dbContext.Transactions.AnyAsync(
+                item => item.TutionId == tutionId && item.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS)
+            );
+
+            if (isConflict)
+                throw new ConflictException("Phần học phí này đang được xử lí bởi một giao dịch khác");
+        }
+
 
         public async Task<ApiResponse> VerifyOTP(VerifyOTPRequest request, string email)
         {
@@ -108,17 +122,18 @@ namespace ibanking_server.Services
             Transaction transaction = await dbContext.Transactions
                 .Include(t => t.Account)
                 .SingleOrDefaultAsync(t => t.Id == request.TransactionId) ??
-                    throw new NotFoundException($"Không tìm thấy giao dịch = {request.TransactionId}");
-            if(transaction.TutionId == request.TutionId && transaction.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS)) {
-                throw new ConflictException("Phần học phí này đang được xử lí bởi một giao dịch khác");
-            }
+                    throw new NotFoundException($"Không tìm thấy mã giao dịch = {request.TransactionId}");
+
+            if (transaction.TutionId != request.TutionId)
+                throw new ConflictException("Mã giao dịch không khớp với mã học phí");
+
+            if (transaction.TutionId == request.TutionId && transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
+                throw new ConflictException("Phần học phí này đã được thanh toán");
+
+            await CheckInProgress(transaction.TutionId);
 
             if (transaction.TransactionStatus.Equals(TransactionStatus.CANCELLED))
                 throw new ConflictException($"Giao dịch này đã bị hủy bỏ!");
-
-            if (transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
-                throw new ConflictException($"Giao dịch này đã hoàn thành vào lúc {transaction.EndTransactionTime.ToString("HH:mm:ss dd/MM/yyyy")}");
-
 
             await UpdateTransaction(account.Id); 
             await otpUtils.VerifyOTP(request.Otp, request.TransactionId);
@@ -146,13 +161,7 @@ namespace ibanking_server.Services
             if (response.IsSuccessStatusCode)
             {
 
-                transaction.TransactionStatus = TransactionStatus.COMPLETED;
-                transaction.EndTransactionTime = DateTime.Now;
-
                 
-                user.Balance -= transaction.Amount;
-                user.IsTrading = false;
-                await dbContext.SaveChangesAsync();
 
                 string to = user.Email;
                 string subject = "Xác Nhận Thanh Toán Giao Dịch Thành Công";
@@ -172,6 +181,13 @@ namespace ibanking_server.Services
                 ";
 
                 emailUtils.SendMail(to, body, subject);
+
+                transaction.TransactionStatus = TransactionStatus.COMPLETED;
+                transaction.EndTransactionTime = DateTime.Now;
+                user.Balance -= transaction.Amount;
+                user.IsTrading = false;
+                await dbContext.SaveChangesAsync();
+
                 return new ApiResponse(true, "Giao dịch thành công", MapTransaction(transaction));
             }
             else
@@ -221,6 +237,9 @@ namespace ibanking_server.Services
 
         public async Task<ApiResponse> FindAllByUserId(int id)
         {
+            Account? account = await dbContext.Accounts.SingleOrDefaultAsync(acc => acc.Id == id)
+                ?? throw new NotFoundException("Mã tài khoản không đúng");
+             
             ICollection<Transaction> transactions = await dbContext.Transactions
                 .Include (t => t.Account)
                 .Where(t => t.AccountId.Equals(id)).ToListAsync();
@@ -235,6 +254,16 @@ namespace ibanking_server.Services
                 .SingleOrDefaultAsync(t => t.Id == id)
                     ?? throw new NotFoundException("Không tìm thấy giao dịch");
 
+            if (transaction.TransactionStatus.Equals(TransactionStatus.CANCELLED))
+            {
+                throw new ConflictException("Giao dịch này đã hoàn tất");
+            }
+
+            if (transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
+            {
+                throw new ConflictException("Giao dịch này đã hoàn tất");
+            }
+
             transaction.TransactionStatus = TransactionStatus.CANCELLED;
             transaction.Account.IsTrading = false;
             await dbContext.SaveChangesAsync();
@@ -248,6 +277,15 @@ namespace ibanking_server.Services
                 .Include(t => t.Account)
                 .SingleOrDefaultAsync(t => t.Id == transactionId)
                     ?? throw new NotFoundException("Không tìm thấy giao dịch");
+
+            if (transaction.TransactionStatus.Equals(TransactionStatus.CANCELLED))
+                throw new ConflictException("Giao dịch này đã bị hủy bỏ");
+
+            if (transaction.TransactionStatus.Equals(TransactionStatus.IN_PROGRESS))
+                throw new ConflictException("Giao dịch đang xử lí");
+
+            if (transaction.TransactionStatus.Equals(TransactionStatus.COMPLETED))
+                throw new ConflictException("Giao dịch đã hoàn tất");
 
             TimeSpan spaceTime = DateTime.Now - transaction.StartTransactionTime;
             if (spaceTime.TotalMinutes > 5)
@@ -286,7 +324,7 @@ namespace ibanking_server.Services
             ";
 
             if (!emailUtils.SendMail(to, body, subject))
-                throw new Exception("Error when sending email");
+                throw new Exception("Có lỗi trong quá trình xử lí! Vui lòng thử lại sau");
 
             return new ApiResponse(true, "Gửi mã thành công", null);
         }

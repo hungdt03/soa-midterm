@@ -55,11 +55,11 @@ namespace ibanking_server.Utils
         {
             OTP existedOTP = await dbContext.OTPs
                 .SingleOrDefaultAsync(o => o.OTPCode.Equals(otp) && o.TransactionId == transactionId) ??
-                    throw new InvalidOTPException("OTP is invalid");
+                    throw new InvalidOTPException("Mã OTP không hợp lệ");
 
             if (existedOTP.ExpiredAt < DateTime.Now)
             {
-                throw new InvalidOTPException("OTP is expired");
+                throw new InvalidOTPException("Mã OTP đã hết hạn");
             }
 
             if(existedOTP.OTPStatus.Equals(OTPStatus.INVALID))

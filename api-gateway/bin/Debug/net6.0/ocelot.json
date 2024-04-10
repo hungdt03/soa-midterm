@@ -2,57 +2,16 @@
   "Routes": [
     // Map routing for tution-service
     {
-      "UpstreamPathTemplate": "/api/students",
-      "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamPathTemplate": "/api/students/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
       "DownstreamScheme": "http",
-      "DownstreamPathTemplate": "/api/students",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5001
-        }
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
-    {
-      "UpstreamPathTemplate": "/api/students",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamScheme": "http",
-      "DownstreamPathTemplate": "/api/students",
+      "DownstreamPathTemplate": "/api/students/{everything}",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 5001
         }
       ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/students/{id}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/students/{id}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5001
-        }
-      ]
-
-    },
-    {
-      "UpstreamPathTemplate": "/api/students/code/{studentCode}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamPathTemplate": "/api/students/code/{studentCode}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5001
-        }
-      ]
-
     },
     {
       "UpstreamPathTemplate": "/api/tutions",
@@ -64,10 +23,7 @@
           "Host": "localhost",
           "Port": 5001
         }
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
+      ]
     },
     {
       "UpstreamPathTemplate": "/api/tutions/{studentCode}",
@@ -151,52 +107,8 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       }
-    },
-    //{
-    //  "UpstreamPathTemplate": "/api/transactions/cancel/{everything}",
-    //  "UpstreamHttpMethod": [ "Put" ],
-    //  "DownstreamScheme": "http",
-    //  "DownstreamPathTemplate": "/api/transactions/cancel/{everything}",
-    //  "DownstreamHostAndPorts": [
-    //    {
-    //      "Host": "localhost",
-    //      "Port": 5002
-    //    }
-    //  ],
-    //  "AuthenticationOptions": {
-    //    "AuthenticationProviderKey": "Bearer"
-    //  }
-    //},
-    //{
-    //  "UpstreamPathTemplate": "/api/transactions/history/{everything}",
-    //  "UpstreamHttpMethod": [ "Get" ],
-    //  "DownstreamScheme": "http",
-    //  "DownstreamPathTemplate": "/api/transactions/history/{everything}",
-    //  "DownstreamHostAndPorts": [
-    //    {
-    //      "Host": "localhost",
-    //      "Port": 5002
-    //    }
-    //  ],
-    //  "AuthenticationOptions": {
-    //    "AuthenticationProviderKey": "Bearer"
-    //  }
-    //},
-    //{
-    //  "UpstreamPathTemplate": "/api/transactions/verify-otp",
-    //  "UpstreamHttpMethod": [ "Post" ],
-    //  "DownstreamScheme": "http",
-    //  "DownstreamPathTemplate": "/api/transactions/verify-otp",
-    //  "DownstreamHostAndPorts": [
-    //    {
-    //      "Host": "localhost",
-    //      "Port": 5002
-    //    }
-    //  ],
-    //  "AuthenticationOptions": {
-    //    "AuthenticationProviderKey": "Bearer"
-    //  }
-    //}
+    }
+    
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"

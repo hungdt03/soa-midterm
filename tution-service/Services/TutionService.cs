@@ -24,16 +24,17 @@ namespace tution_service.Services
 
         public async Task<ApiResponse> CreateTution(TutionRequest tutionRequest)
         {
+            Student student = await _dbContext.Students
+                .SingleOrDefaultAsync(s => s.StudentCode.Equals(tutionRequest.StudentCode))
+                ?? throw new NotFoundException("Mã số sinh viên không dúng");
+
             Tution? checkedTution = await _dbContext.Tutions
                 .Include(t => t.Student)
-                .SingleOrDefaultAsync(t => t.TutionCode.Equals(tutionRequest.TutionCode) && t.StudentId == tutionRequest.StudentId);
+                .SingleOrDefaultAsync(t => t.TutionCode.Equals(tutionRequest.TutionCode));
 
-            if (checkedTution != null)
-                throw new ConflictException($"The tution's code `{checkedTution.TutionCode}` of {checkedTution.Student.FullName} have already existed");
+            if(checkedTution != null && checkedTution!.Student.StudentCode.Equals(tutionRequest.StudentCode))
+                throw new ConflictException($"Mã học phí `{checkedTution.TutionCode}` của {checkedTution.Student.FullName} đã tồn tại");
 
-            Student student = await _dbContext.Students
-                .SingleOrDefaultAsync(s => s.Id == tutionRequest.StudentId)
-                ?? throw new NotFoundException("Student not found");
 
             Tution tution = new Tution();
             tution.Status = TutionStatus.UNPAID;
@@ -47,7 +48,7 @@ namespace tution_service.Services
             await _dbContext.Tutions.AddAsync(tution);
             await _dbContext.SaveChangesAsync();
 
-            return new ApiResponse(true, "Tution is created", MapTution(tution));
+            return new ApiResponse(true, "Học phí đã được tạo", MapTution(tution));
         }
 
         private object MapTution(Tution tution)
@@ -67,6 +68,10 @@ namespace tution_service.Services
 
         public async Task<ApiResponse> FindAllByStudentCode(string studentCode)
         {
+            Student student = await _dbContext.Students
+               .SingleOrDefaultAsync(s => s.StudentCode.Equals(studentCode))
+               ?? throw new NotFoundException("Mã số sinh viên không dúng");
+
             List<Tution> tutions = await _dbContext.Tutions
                .Where(t => t.Student.StudentCode.Equals(studentCode)).ToListAsync();
 
@@ -75,9 +80,13 @@ namespace tution_service.Services
 
         public async Task<ApiResponse> PaymentTution(PaymentRequest paymentRequest, string token)
         {
+            Student student = await _dbContext.Students
+               .SingleOrDefaultAsync(s => s.Id == paymentRequest.StudentId)
+               ?? throw new NotFoundException("Sinh viên không tồn tại");
+
             Tution? checkedTution = await _dbContext.Tutions
                 .SingleOrDefaultAsync(t => t.Id.Equals(paymentRequest.TutionId) && t.StudentId == paymentRequest.StudentId)
-                    ?? throw new NotFoundException($"Dữ liệu học phí có id= {paymentRequest.TutionId} của MSSV = {paymentRequest.StudentId} không tìm thấy");
+                    ?? throw new NotFoundException($"Dữ liệu học phí của sinh viên này không tồn tại");
 
             if (checkedTution.Status.Equals(TutionStatus.PAID))
                 throw new ConflictException("Phần học phí này đã được thanh toán");

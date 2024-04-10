@@ -29,7 +29,7 @@ namespace authentication_service.Services
             DateTime expireTime = DateTime.Now.AddHours(2);
             string accessToken = jwtTokenUtil.GenerateToken(existedUser, expireTime);
 
-            return new TokenResponse(true, accessToken, expireTime, existedUser);
+            return new TokenResponse(true, accessToken, expireTime, MapPrincipal(existedUser));
         }
 
         public async Task<ApiResponse> GetPrincipal(string email)
@@ -38,17 +38,25 @@ namespace authentication_service.Services
                 .Where(u => u.Email.Equals(email))
                 .FirstOrDefaultAsync() ?? throw new BadCredentialsException("Unauthorized");
 
-            return new ApiResponse(true, "Lấy thông tin người dùng thành công", existedUser);
+            return new ApiResponse(true, "Lấy thông tin người dùng thành công", MapPrincipal(existedUser));
+        }
+
+        private object MapPrincipal(Account account)
+        {
+            return new
+            {
+                Id = account.Id,
+                Name = account.Name,
+                UserName = account.UserName,
+                Email = account.Email,
+                Balance = account.Balance,
+                PhoneNumber = account.PhoneNumber,
+
+            };
         }
 
         public async Task<ApiResponse> Registry(RegistryRequest request)
         {
-            if (_dbContext == null)
-            {
-                throw new ConflictException("DB null");
-            }
-
-         
             Account? existedUser = await _dbContext.Accounts
                 .Where(u => u.Email.Equals(request.Email) && u.PhoneNumber.Equals(request.PhoneNumber))
                 .FirstOrDefaultAsync();

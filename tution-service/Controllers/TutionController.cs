@@ -1,4 +1,5 @@
 ﻿using ibanking_server.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShareDtos;
@@ -31,6 +32,7 @@ namespace tution_service.Controllers
             return Ok(await tutionService.CreateTution(tutionRequest));
         }
 
+        [Authorize]
         [HttpPost("payment")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> PaymentTution([FromBody] PaymentRequest paymentRequest)

@@ -23,7 +23,7 @@ namespace tution_service.Services
                 .SingleOrDefaultAsync(s => s.StudentCode.Equals(studentDTO.StudentCode));
 
             if(existedStudent != null) {
-                throw new Exception("Student existed");
+                throw new ConflictException("Mã số sinh viên đã tồn tại");
             }
 
             Student student = new Student();
@@ -33,7 +33,7 @@ namespace tution_service.Services
             await dbContext.Students.AddAsync(student);
             await dbContext.SaveChangesAsync();
 
-            return new ApiResponse(true, "Created", student);
+            return new ApiResponse(true, "Tạo sinh viên thành công", student);
         }
 
         public async Task<ApiResponse> FindAll()

@@ -19,7 +19,7 @@ namespace ibanking_server.Controllers
             this.transactionService = transactionService;
         }
 
-
+        [Authorize]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public async Task<IActionResult> TransactionPaymentTutiton([FromBody] TransactionRequest request)
@@ -29,6 +29,7 @@ namespace ibanking_server.Controllers
             return Ok(await transactionService.TransactionPaymentTutiton(request, email));
         }
 
+        [Authorize]
         [HttpGet("send-otp/again/{transactionId}")]
         [Authorize]
         public async Task<IActionResult> SendCodeAgain([FromRoute] int transactionId)
@@ -36,12 +37,14 @@ namespace ibanking_server.Controllers
             return Ok(await transactionService.SendCodeAgain(transactionId));
         }
 
+        [Authorize]
         [HttpPut("cancel/{id}")]
         public async Task<IActionResult> CancelTransaction([FromRoute] int id)
         {
             return Ok(await transactionService.CancelTransaction(id));
         }
 
+        [Authorize]
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOTP([FromBody] VerifyOTPRequest request)
         {
@@ -50,7 +53,8 @@ namespace ibanking_server.Controllers
             return Ok(await transactionService.VerifyOTP(request, email));
         }
 
-        [HttpGet("history/{accountId}")]
+        [Authorize]
+        [HttpGet("{accountId}")]
         [Authorize]
         public async Task<IActionResult> GetTransactionsByUserId([FromRoute] int accountId)
         {

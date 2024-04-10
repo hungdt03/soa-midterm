@@ -27,7 +27,6 @@ namespace authentication_service.Controllers
             return Ok(await userService.GetPrincipal(email));
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
@@ -35,7 +34,6 @@ namespace authentication_service.Controllers
             return Ok(await userService.Login(req));
         }
 
-        [AllowAnonymous]
         [HttpPost("signup")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Signup([FromBody] RegistryRequest req)
